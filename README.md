@@ -1,4 +1,3 @@
 # oliviaferrigno.github.io
-Mechanical Engineering Design Website
-[break]
+Mechanical Engineering Design Website<br>
 I hope you enjoy!
