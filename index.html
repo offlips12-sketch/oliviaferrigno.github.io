@@ -366,6 +366,49 @@
     .media-fill.small{height:130px;}
   }
 
+    /* ---------- click-to-expand ---------- */
+  .expand-btn{
+    position:absolute; top:8px; right:8px; z-index:2;
+    width:30px; height:30px; padding:0;
+    background:rgba(64,49,47,0.65);
+    border:none; border-radius:7px;
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; cursor:pointer;
+    opacity:0; transition:opacity .15s, background .15s;
+  }
+  .expand-btn:hover{background:rgba(64,49,47,0.85);}
+  .media-fill:hover .expand-btn,
+  .media-fill:focus-within .expand-btn,
+  .expand-btn:focus-visible{opacity:1;}
+  @media (hover:none){ .expand-btn{opacity:1;} } /* always show on touch devices */
+ 
+  .lightbox-overlay{
+    position:fixed; inset:0; z-index:1000;
+    background:rgba(20,12,13,0.92);
+    display:none; align-items:center; justify-content:center;
+    padding:48px 24px;
+  }
+  .lightbox-overlay.open{display:flex;}
+  .lightbox-inner{max-width:92vw; max-height:88vh; display:flex; flex-direction:column; align-items:center;}
+  .lightbox-content img, .lightbox-content video{
+    max-width:92vw; max-height:80vh; display:block;
+    border-radius:8px; box-shadow:0 20px 60px rgba(0,0,0,0.5);
+  }
+  .lightbox-caption{
+    margin-top:14px; text-align:center;
+    font-family:'IBM Plex Mono', monospace; font-size:12.5px;
+    letter-spacing:.04em; text-transform:uppercase; color:#fff;
+  }
+  .lightbox-close{
+    position:fixed; top:20px; right:24px; z-index:1001;
+    width:40px; height:40px; border-radius:999px;
+    border:1px solid rgba(255,255,255,0.35);
+    background:rgba(255,255,255,0.08); color:#fff;
+    font-size:22px; line-height:1; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .lightbox-close:hover{background:rgba(255,255,255,0.2);}
+ 
   .sheet-tb{border-top:1px solid var(--line); padding-left:0.25in;}
 
   /* blank template sheet */
@@ -714,6 +757,10 @@
         </div>
         <div class="media-col">
           <div class="media-fill">
+            <button class="expand-btn" aria-label="View full size" data-type="video" data-src="assets/Senior_Design_Machining_-_edited_small.mp4" data-caption="CNC machining — dogbone test specimens" onclick="openLightbox(this)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H3v6M15 3h6v6M3 15v6h6M21 15v6h-6"/></svg>
+            </button>
+          <!-- <div class="media-fill"> -->            
             <video controls muted loop playsinline preload="metadata" poster="assets/dogbone.png">
               <source src="assets/Senior Design Machining - edited small.mp4" type="video/mp4">
             </video>
