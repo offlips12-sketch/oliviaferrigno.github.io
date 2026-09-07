@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mechanical Design Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#F8F1EE;
+    --ink-2:#F1E1DE;
+    --panel:#FDFAF8;
+    --panel-2:#F1DDDB;
+    --line:#E6CDC9;
+    --line-bright:#A85D74;
+    --paper:#FDFAF8;
+    --text:#40312F;
+    --muted:#8C7178;
+    --accent:#C9718C;
+    --accent-2:#9C4E68;
+    --good:#8FAD8A;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      repeating-linear-gradient(0deg, rgba(168,93,116,0.06) 0px, rgba(168,93,116,0.06) 1px, transparent 1px, transparent 32px),
+      repeating-linear-gradient(90deg, rgba(168,93,116,0.06) 0px, rgba(168,93,116,0.06) 1px, transparent 1px, transparent 32px),
+      var(--ink);
+    color:var(--text);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--accent);color:var(--ink);}
+  a{color:inherit;}
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  .display{font-family:'Big Shoulders Display', sans-serif; font-weight:800; text-transform:uppercase;}
+  :focus-visible{outline:2px solid var(--accent-2); outline-offset:3px;}
+
+  /* ---------- layout shell ---------- */
+  .wrap{max-width:1180px; margin:0 auto; padding:0 28px;}
+  section{padding:96px 0; border-bottom:1px solid var(--line);}
+  section:last-of-type{border-bottom:none;}
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--line-bright);
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:14px;
+  }
+  .eyebrow .tag{
+    border:1px solid var(--line-bright);
+    padding:2px 8px;
+    color:var(--accent-2);
+    border-color:var(--accent);
+    border-radius:999px;
+  }
+  .eyebrow::after{content:""; flex:1; height:1px; background:var(--line);}
+
+  h2.section-title{
+    font-family:'Big Shoulders Display', sans-serif;
+    font-weight:800;
+    text-transform:uppercase;
+    font-size:clamp(28px,4vw,44px);
+    letter-spacing:.01em;
+    margin:0 0 40px;
+  }
+
+  /* ---------- nav (sheet index) ---------- */
+  .sheet-nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(248,241,238,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  .sheet-nav .wrap{
+    display:flex; align-items:center; gap:26px;
+    padding:14px 28px;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .sheet-nav .wrap::-webkit-scrollbar{display:none;}
+  .sheet-nav .brand{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px; font-weight:600; color:var(--accent-2);
+    white-space:nowrap; letter-spacing:.05em;
+  }
+  .sheet-nav a{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px; letter-spacing:.06em;
+    color:var(--muted); text-decoration:none;
+    white-space:nowrap;
+    padding:4px 0; border-bottom:1px solid transparent;
+    transition:color .15s, border-color .15s;
+  }
+  .sheet-nav a:hover, .sheet-nav a:focus-visible{color:var(--text); border-color:var(--accent);}
+  .sheet-nav a b{color:var(--accent-2); font-weight:600; margin-right:5px;}
+
+  /* ---------- hero / title block ---------- */
+  .hero{padding-top:64px; position:relative; overflow:hidden;}
+  .hero::before{
+    content:"";
+    position:absolute; inset:-20% -10% auto auto;
+    width:640px; height:640px;
+    background:
+      radial-gradient(circle at center, transparent 0 118px, rgba(201,113,140,0.16) 119px 120px, transparent 121px),
+      radial-gradient(circle at center, transparent 0 200px, rgba(201,113,140,0.10) 201px 202px, transparent 203px);
+    pointer-events:none;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1.5fr 1fr;
+    gap:48px;
+    align-items:end;
+    position:relative;
+  }
+  .hero h1{
+    font-family:'Big Shoulders Display', sans-serif;
+    font-weight:800;
+    font-size:clamp(46px,7.4vw,96px);
+    line-height:.92;
+    letter-spacing:.005em;
+    margin:0 0 18px;
+    text-transform:uppercase;
+  }
+  .hero h1 span{color:var(--accent);}
+  .hero .role{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:15px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--line-bright);
+    margin:0 0 22px;
+  }
+  .hero .summary{
+    max-width:52ch; color:var(--text); font-size:16px; margin:0 0 8px;
+  }
+  .hero-callouts{
+    display:flex; flex-wrap:wrap; gap:10px 28px; margin-top:28px;
+  }
+  .callout{
+    display:flex; align-items:baseline; gap:8px;
+    font-family:'IBM Plex Mono', monospace; font-size:13px; color:var(--muted);
+  }
+  .callout b{
+    font-family:'Big Shoulders Display', sans-serif;
+    font-size:22px; color:var(--accent-2); font-weight:700;
+  }
+  .callout::before{content:"●"; color:var(--accent); font-size:6px;}
+
+  /* title block component (signature element) */
+  .title-block{
+    border:1px solid var(--line-bright);
+    background:var(--panel);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .title-block .tb-row{
+    display:grid;
+    border-top:1px solid var(--line);
+  }
+  .title-block .tb-row:first-child{border-top:none;}
+  .tb-cols-2{grid-template-columns:1fr 1fr;}
+  .tb-cols-3{grid-template-columns:1fr 1fr 1fr;}
+  .title-block .tb-cell{
+    padding:10px 14px;
+    border-left:1px solid var(--line);
+  }
+  .title-block .tb-cell:first-child{border-left:none;}
+  .tb-label{
+    display:block; font-family:'IBM Plex Mono', monospace;
+    font-size:10px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--line-bright); margin-bottom:4px;
+  }
+  .tb-value{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px; color:var(--text); word-break:break-word;
+  }
+  .tb-value a{text-decoration:none; border-bottom:1px dotted var(--muted);}
+  .tb-value a:hover{color:var(--accent-2); border-color:var(--accent-2);}
+  .tb-head{
+    padding:12px 14px; background:var(--panel-2);
+    font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--accent-2); border-bottom:1px solid var(--line);
+  }
+
+  /* ---------- dimension divider ---------- */
+  .dim-divider{
+    display:flex; align-items:center; gap:10px;
+    margin:18px 0 0; color:var(--line-bright);
+  }
+  .dim-divider .arrow{font-size:13px;}
+  .dim-divider .rule{flex:1; height:1px; background:var(--line-bright); position:relative;}
+
+  /* ---------- competency / feature-control grid ---------- */
+  .fc-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
+    background:var(--line); border:1px solid var(--line);
+    border-radius:var(--radius); overflow:hidden;
+  }
+  .fc-card{
+    background:var(--panel); padding:26px 24px;
+    display:flex; flex-direction:column; gap:14px; min-height:170px;
+  }
+  .fc-frame{
+    display:flex; align-items:center; gap:0;
+    border:1px solid var(--accent); width:fit-content;
+    border-radius:999px; overflow:hidden;
+  }
+  .fc-frame .fc-icon{
+    padding:6px 8px; border-right:1px solid var(--accent);
+    display:flex; align-items:center; justify-content:center; color:var(--accent-2);
+  }
+  .fc-frame .fc-code{
+    padding:6px 10px; font-family:'IBM Plex Mono',monospace; font-size:11px;
+    letter-spacing:.08em; color:var(--accent-2);
+  }
+  .fc-card h3{
+    font-family:'Big Shoulders Display', sans-serif; text-transform:uppercase;
+    font-size:19px; margin:0; letter-spacing:.01em; color:var(--text);
+  }
+  .fc-card ul{margin:0; padding-left:16px; font-size:13.5px; color:var(--muted);}
+  .fc-card li{margin-bottom:4px;}
+
+  /* ---------- revision history (experience) ---------- */
+  .rev-table{border:1px solid var(--line); overflow:hidden; border-radius:var(--radius);}
+  .rev-header-row, .rev-row-head{
+    display:grid; grid-template-columns:70px 120px 1fr 150px;
+  }
+  .rev-header-row{
+    background:var(--panel-2); font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--line-bright);
+  }
+  .rev-header-row div, .rev-row-head div{padding:10px 14px; border-left:1px solid var(--line);}
+  .rev-header-row div:first-child, .rev-row-head div:first-child{border-left:none;}
+  .rev-row{border-top:1px solid var(--line);}
+  .rev-row-head{
+    cursor:pointer; align-items:center;
+    font-family:'IBM Plex Mono', monospace;
+  }
+  .rev-row-head .rev-letter{
+    color:var(--accent); font-family:'Big Shoulders Display',sans-serif; font-weight:800; font-size:20px;
+  }
+  .rev-row-head .rev-date{color:var(--muted); font-size:12.5px;}
+  .rev-row-head .rev-desc{font-size:14.5px; color:var(--text); font-family:'IBM Plex Sans', sans-serif; font-weight:600;}
+  .rev-row-head .rev-desc small{display:block; font-family:'IBM Plex Mono',monospace; font-weight:400; font-size:11.5px; color:var(--line-bright); margin-top:2px; text-transform:uppercase; letter-spacing:.04em;}
+  .rev-row-head .rev-toggle{color:var(--muted); font-size:12px; text-align:right;}
+  .rev-body{
+    max-height:0; overflow:hidden; transition:max-height .3s ease;
+    background:var(--ink-2);
+  }
+  .rev-row.open .rev-body{max-height:320px;}
+  .rev-row.open .rev-toggle::after{content:"CLOSE";}
+  .rev-row .rev-toggle::after{content:"VIEW";}
+  .rev-body-inner{padding:6px 14px 20px 200px;}
+  .rev-body-inner ul{margin:0; padding-left:16px; font-size:13.5px; color:var(--text);}
+  .rev-body-inner li{margin-bottom:7px;}
+  @media (max-width:760px){
+    .rev-header-row, .rev-row-head{grid-template-columns:44px 1fr; }
+    .rev-header-row div:nth-child(2), .rev-header-row div:nth-child(4),
+    .rev-row-head .rev-date, .rev-row-head .rev-toggle{display:none;}
+    .rev-body-inner{padding-left:14px;}
+  }
+
+  /* ---------- project sheets ---------- */
+  .sheet{
+    border:1px solid var(--line-bright);
+    margin-bottom:56px;
+    background:var(--panel);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .sheet-topbar{
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding:14px 20px; border-bottom:1px solid var(--line);
+    background:var(--panel-2);
+    font-family:'IBM Plex Mono', monospace;
+  }
+  .sheet-topbar .sheet-no{font-size:11px; letter-spacing:.14em; color:var(--accent-2); text-transform:uppercase;}
+  .sheet-topbar .sheet-scale{font-size:11px; color:var(--muted);}
+  .sheet-body{padding:32px; display:grid; grid-template-columns:1.1fr 1fr; gap:32px;}
+  @media (max-width:820px){.sheet-body{grid-template-columns:1fr;}}
+  .sheet-body h3{
+    font-family:'Big Shoulders Display', sans-serif; text-transform:uppercase;
+    font-size:clamp(24px,3vw,32px); margin:0 0 6px; letter-spacing:.01em;
+  }
+  .sheet-body .sheet-sub{
+    font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--line-bright);
+    text-transform:uppercase; letter-spacing:.08em; margin-bottom:18px;
+  }
+  .spec-strip{
+    display:grid; grid-template-columns:repeat(2,1fr); gap:1px;
+    background:var(--line); border:1px solid var(--line); margin-bottom:18px;
+    border-radius:8px; overflow:hidden;
+  }
+  .spec-strip div{background:var(--ink-2); padding:9px 12px;}
+  .spec-strip .tb-label{margin-bottom:3px;}
+  .spec-strip .tb-value{font-size:12.5px;}
+  .sheet-body ul.bullets{margin:0 0 20px; padding-left:16px; font-size:14px; color:var(--text);}
+  .sheet-body ul.bullets li{margin-bottom:8px;}
+  .chip-row{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.04em;
+    border:1px solid var(--line-bright); color:var(--line-bright);
+    padding:4px 10px; text-transform:uppercase;
+    border-radius:999px;
+  }
+
+  .media-col{display:flex; flex-direction:column; gap:12px;}
+  .upload-slot{
+    position:relative;
+    border:1.5px dashed var(--line-bright);
+    background-color:rgba(201,113,140,0.06);
+    background-size:cover; background-position:center;
+    display:flex; align-items:center; justify-content:center;
+    text-align:center; cursor:pointer;
+    min-height:190px;
+    border-radius:10px;
+    transition:border-color .15s, background-color .15s;
+  }
+  .upload-slot.small{min-height:96px;}
+  .upload-slot:hover{border-color:var(--accent-2);}
+  .upload-slot input{display:none;}
+  .upload-slot-label{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted);
+    letter-spacing:.06em; text-transform:uppercase; padding:12px; pointer-events:none;
+  }
+  .upload-slot-label b{display:block; color:var(--line-bright); font-size:20px; margin-bottom:6px; font-family:'Big Shoulders Display',sans-serif;}
+  .upload-slot.has-image .upload-slot-label{
+    background:rgba(64,49,47,0.7); opacity:0; transition:opacity .15s;
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  }
+  .upload-slot.has-image:hover .upload-slot-label{opacity:1;}
+  .media-thumbs{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+
+  .media-fill{
+    position:relative;
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    background:var(--panel-2);
+    height:260px;
+  }
+  .media-fill.small{height:140px;}
+  .media-fill img, .media-fill video{
+    width:100%; height:100%; object-fit:cover; display:block; background:#111;
+  }
+  .media-fill .caption{
+    position:absolute; left:0; right:0; bottom:0;
+    padding:7px 10px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;
+    color:#fff;
+    background:linear-gradient(to top, rgba(64,49,47,0.82), transparent);
+  }
+  @media (max-width:820px){
+    .media-fill{height:220px;}
+    .media-fill.small{height:130px;}
+  }
+
+  .sheet-tb{border-top:1px solid var(--line); padding-left:0.25in;}
+
+  /* blank template sheet */
+  .sheet.blank{border-style:dashed; background:transparent;}
+  .sheet.blank .sheet-body{grid-template-columns:1fr; text-align:center; padding:48px 32px;}
+  .sheet.blank .upload-slot{min-height:120px; max-width:420px; margin:0 auto 18px;}
+  .sheet.blank p{color:var(--muted); font-size:13.5px; max-width:52ch; margin:0 auto;}
+
+  /* ---------- toolbox ---------- */
+  .toolbox-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1px;
+    background:var(--line); border:1px solid var(--line);
+    border-radius:var(--radius); overflow:hidden;
+  }
+  .tool-card{
+    background:var(--panel); padding:18px; text-align:left;
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .tool-card .tool-name{font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:13.5px; color:var(--text);}
+  .tool-card .tool-cat{font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent-2);}
+  .tool-bar{height:3px; border-radius:2px; overflow:hidden; background:var(--line); margin-top:4px; position:relative;}
+  .tool-bar span{position:absolute; inset:0; background:var(--accent); width:var(--w,70%);}
+
+  /* ---------- footer / approval ---------- */
+  footer{padding:80px 0 60px;}
+  .approval{
+    display:flex; flex-wrap:wrap; gap:40px; justify-content:space-between; align-items:flex-end;
+    border-top:1px solid var(--line); padding-top:36px;
+  }
+  .stamp{
+    border:1.5px solid var(--good); color:var(--good);
+    font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.1em;
+    padding:8px 14px; transform:rotate(-3deg); width:fit-content;
+    text-transform:uppercase; border-radius:999px;
+  }
+  .footer-links{display:flex; gap:22px; flex-wrap:wrap;}
+  .footer-links a{
+    font-family:'IBM Plex Mono',monospace; font-size:13px; text-decoration:none;
+    color:var(--text); border-bottom:1px solid var(--accent); padding-bottom:2px;
+  }
+  .footer-links a:hover{color:var(--accent-2);}
+  .footer-note{color:var(--muted); font-size:12px; margin-top:30px; font-family:'IBM Plex Mono',monospace;}
+
+  @media (max-width:900px){
+    .hero-grid{grid-template-columns:1fr;}
+    .fc-grid{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:560px){
+    .fc-grid{grid-template-columns:1fr;}
+    .tb-cols-2, .tb-cols-3{grid-template-columns:1fr;}
+    .title-block .tb-cell{border-left:none; border-top:1px solid var(--line);}
+    .title-block .tb-row:first-child .tb-cell:first-child{border-top:none;}
+    section{padding:64px 0;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .rev-body{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<!-- =========================================================
+  HOW TO USE THIS FILE
+  - Replace bracketed [ ] placeholder text with your info.
+  - Click any dashed box to upload an image for live preview.
+  - To make an image permanent for deployment, replace the
+    upload-slot div with: <img src="your-file.jpg" alt="...">
+  - Duplicate the ".sheet.blank" template near the bottom of
+    the Projects section to add more project sheets.
+========================================================== -->
+
+<nav class="sheet-nav">
+  <div class="wrap">
+    <span class="brand"> OLIVIA FERRIGNO// PORTFOLIO SET</span>
+    <a href="#competencies"><b>C-1</b>Competencies</a>
+    <a href="#history"><b>H-1</b>Experience</a>
+    <a href="#projects"><b>P-1</b>Projects</a>
+    <a href="#toolbox"><b>S-1</b>Software</a>
+    <a href="#education"><b>E-1</b>Education</a>
+    <a href="#contact"><b>X-1</b>Contact</a>
+  </div>
+</nav>
+
+<!-- ===================== HERO / TITLE SHEET ===================== -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow"><span class="tag">SHEET T-1</span> TITLE &amp; GENERAL NOTES</div>
+        <h1>Olivia <span>Ferrigno</span></h1>
+        <p class="role">Mechanical Design Engineer — CAD / FEA / Product Development</p>
+        <p class="summary">Design engineer who validates ideas before they're built — pairing first-principles analysis with hands-on CAD, FEA, and iterative design to build a better world.</p>
+        <div class="hero-callouts">
+          <div class="callout"><b>4.00</b>GPA, B.S. ME</div>
+          <div class="callout"><b>Summa</b>Cum Laude</div>
+          <div class="callout"><b>2+ yrs</b>Industry Design</div>
+          <div class="callout"><b>ANSYS</b>+ SolidWorks FEA</div>
+        </div>
+      </div>
+
+      <div class="title-block">
+        <div class="tb-head">Title Block — Rev D</div>
+        <div class="tb-row tb-cols-2">
+          <div class="tb-cell"><span class="tb-label">Drawn by</span><span class="tb-value">Olivia Ferrigno</span></div>
+          <div class="tb-cell"><span class="tb-label">Discipline</span><span class="tb-value">Mechanical</span></div>
+        </div>
+        <div class="tb-row tb-cols-2">
+          <div class="tb-cell"><span class="tb-label">Based in</span><span class="tb-value">Boston, MA</span></div>
+          <div class="tb-cell"><span class="tb-label">Status</span><span class="tb-value" style="color:var(--good)">Open to work</span></div>
+        </div>
+        <div class="tb-row tb-cols-2">
+          <div class="tb-cell"><span class="tb-label">LinkedIn</span><span class="tb-value"><a href="#">https://www.linkedin.com/in/olivia-ferrigno/</a></span></div>
+          <div class="tb-cell"><span class="tb-label">Rev date</span><span class="tb-value">Sept 2026</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== CORE COMPETENCIES ===================== -->
+<section id="competencies">
+  <div class="wrap">
+    <div class="eyebrow"><span class="tag">SHEET C-1</span> CORE COMPETENCIES</div>
+    <h2 class="section-title">Feature Control Summary</h2>
+
+    <div class="fc-grid">
+
+      <div class="fc-card">
+        <div class="fc-frame">
+          <span class="fc-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3v6M12 15v6M3 12h6M15 12h6"/></svg>
+          </span>
+          <span class="fc-code">ANALYSIS</span>
+        </div>
+        <h3>Analysis &amp; Simulation</h3>
+        <ul>
+          <li>Finite element analysis (ANSYS, SolidWorks Sim)</li>
+          <li>Stress, strain &amp; failure-mode prediction</li>
+          <li>DFMEA — design failure mode &amp; effects</li>
+        </ul>
+      </div>
+
+      <div class="fc-card">
+        <div class="fc-frame">
+          <span class="fc-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M9 21V9"/></svg>
+          </span>
+          <span class="fc-code">MODEL</span>
+        </div>
+        <h3>Design &amp; Modeling</h3>
+        <ul>
+          <li>3D/2D CAD — SolidWorks, AutoCAD, Revit MEP</li>
+          <li>GD&amp;T tolerancing for machined parts</li>
+          <li>DFM / DFSS — manufacturability &amp; Six Sigma</li>
+        </ul>
+      </div>
+
+      <div class="fc-card">
+        <div class="fc-frame">
+          <span class="fc-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4v16h16"/><path d="M7 15l4-5 3 3 5-7"/></svg>
+          </span>
+          <span class="fc-code">V&amp;V</span>
+        </div>
+        <h3>Test &amp; Validation</h3>
+        <ul>
+          <li>Tensile, shear &amp; hardness testing</li>
+          <li>Design of experiments (DOE)</li>
+          <li>Verification &amp; validation planning</li>
+        </ul>
+      </div>
+
+      <div class="fc-card">
+        <div class="fc-frame">
+          <span class="fc-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          </span>
+          <span class="fc-code">RCA</span>
+        </div>
+        <h3>Root Cause &amp; Reliability</h3>
+        <ul>
+          <li>Failure investigation &amp; corrective action</li>
+          <li>Cross-discipline design reviews</li>
+          <li>Field commissioning &amp; troubleshooting</li>
+        </ul>
+      </div>
+
+      <div class="fc-card">
+        <div class="fc-frame">
+          <span class="fc-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 19V5M4 19h16"/><rect x="7" y="12" width="3" height="7"/><rect x="12" y="8" width="3" height="11"/><rect x="17" y="4" width="3" height="15"/></svg>
+          </span>
+          <span class="fc-code">DATA</span>
+        </div>
+        <h3>Programming &amp; Data</h3>
+        <ul>
+          <li>Python (intermediate) &amp; MATLAB</li>
+          <li>Statistical data analysis</li>
+          <li>Quantitative image / test-data analysis</li>
+        </ul>
+      </div>
+
+      <div class="fc-card">
+        <div class="fc-frame">
+          <span class="fc-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+          </span>
+          <span class="fc-code">DOCS</span>
+        </div>
+        <h3>Documentation &amp; Process</h3>
+        <ul>
+          <li>BOMs, test procedures &amp; traceability</li>
+          <li>Technical reports for clients &amp; partners</li>
+          <li>Lean manufacturing &amp; production engineering</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===================== REVISION HISTORY / EXPERIENCE ===================== -->
+<section id="history">
+  <div class="wrap">
+    <div class="eyebrow"><span class="tag">SHEET H-1</span> REVISION HISTORY</div>
+    <h2 class="section-title">Experience Log</h2>
+
+    <div class="rev-table">
+      <div class="rev-header-row">
+        <div>Rev</div><div>Date</div><div>Description</div><div>Detail</div>
+      </div>
+
+      <div class="rev-row open">
+        <div class="rev-row-head" onclick="this.parentElement.classList.toggle('open')">
+          <div class="rev-letter">D</div>
+          <div class="rev-date">2024 — Present</div>
+          <div class="rev-desc">Mechanical Engineer <small>Arup</small></div>
+          <div class="rev-toggle"></div>
+        </div>
+        <div class="rev-body">
+          <div class="rev-body-inner">
+            <ul>
+              <li>Designed &amp; validated 2D/3D mechanical systems, concept through construction, balancing performance, constructability &amp; code compliance</li>
+              <li>Owned deliverables across multiple projects; interfaced with clients, vendors &amp; multidisciplinary teams</li>
+              <li>Ran design reviews &amp; failure-mode evaluations with senior engineers to de-risk designs pre-implementation</li>
+              <li>Supported field installation &amp; commissioning; troubleshot systems against design intent</li>
+              <li>Mentored junior engineers; led Boston sustainability employee resource group</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="rev-row">
+        <div class="rev-row-head" onclick="this.parentElement.classList.toggle('open')">
+          <div class="rev-letter">C</div>
+          <div class="rev-date">2023 — 2024</div>
+          <div class="rev-desc">Lead, Senior Design Project <small>University of Connecticut</small></div>
+          <div class="rev-toggle"></div>
+        </div>
+        <div class="rev-body">
+          <div class="rev-body-inner">
+            <ul>
+              <li>Led design, manufacturing &amp; testing of brazed test specimens for an aerospace manufacturing partner, concept through final report</li>
+              <li>Ran FEA (SolidWorks, ANSYS) on brazed joints — stress distribution, material behavior, failure prediction</li>
+              <li>Delivered DFMEA insights on brazing methodology back to the partner company</li>
+              <li>Designed ASME dogbone specimens with GD&amp;T tolerancing for CNC machining</li>
+              <li>Authored BOMs, test procedures &amp; validation plans; presented via report, oral &amp; poster session</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="rev-row">
+        <div class="rev-row-head" onclick="this.parentElement.classList.toggle('open')">
+          <div class="rev-letter">B</div>
+          <div class="rev-date">Jun — Aug 2022</div>
+          <div class="rev-desc">Repair Methods &amp; Product Intern <small>Volvo Cars USA</small></div>
+          <div class="rev-toggle"></div>
+        </div>
+        <div class="rev-body">
+          <div class="rev-body-inner">
+            <ul>
+              <li>Hands-on with automotive mechanical systems, repair methods, tooling &amp; diagnostics</li>
+              <li>Evaluated product design tradeoffs against customer requirements &amp; competitive benchmarks</li>
+              <li>Balanced technical feasibility, UX, manufacturing &amp; cost in design recommendations</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="rev-row">
+        <div class="rev-row-head" onclick="this.parentElement.classList.toggle('open')">
+          <div class="rev-letter">A</div>
+          <div class="rev-date">May — Aug 2021</div>
+          <div class="rev-desc">Research Intern, Holster Scholar <small>UConn Health Center</small></div>
+          <div class="rev-toggle"></div>
+        </div>
+        <div class="rev-body">
+          <div class="rev-body-inner">
+            <ul>
+              <li>Studied growth-plate cartilage morphology via light sheet fluorescence microscopy &amp; quantitative image analysis</li>
+              <li>Ran tissue prep, sectioning &amp; histological processing under lab protocol</li>
+              <li>Authored technical report published to UConn database; presented at Holster Scholars symposium</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PROJECTS ===================== -->
+<section id="projects">
+  <div class="wrap">
+    <div class="eyebrow"><span class="tag">SHEET P-1</span> FEATURED PROJECT SET</div>
+    <h2 class="section-title">Selected Work</h2>
+
+    <!-- PROJECT 1 -->
+    <div class="sheet">
+      <div class="sheet-topbar">
+        <span class="sheet-no">Sheet P-1 of 3</span>
+        <span class="sheet-scale">Scope: Aerospace / Materials Joining</span>
+      </div>
+      <div class="sheet-body">
+        <div>
+          <h3>Brazed Joint FEA &amp; Validation</h3>
+          <div class="sheet-sub">UConn Senior Design — Aerospace Manufacturing Partner</div>
+          <div class="spec-strip">
+            <div><span class="tb-label">Method</span><span class="tb-value">FEA + physical test</span></div>
+            <div><span class="tb-label">Standard</span><span class="tb-value">ASME dogbone spec</span></div>
+            <div><span class="tb-label">Testing</span><span class="tb-value">Tensile / shear / hardness</span></div>
+            <div><span class="tb-label">Output</span><span class="tb-value">DFMEA to partner co.</span></div>
+          </div>
+          <ul class="bullets">
+            <li>Owned project concept → manufacturing → test → final report</li>
+            <li>Modeled stress distribution &amp; joint failure modes in ANSYS</li>
+            <li>Toleranced specimens (GD&amp;T) for CNC machining</li>
+            <li>Recommended brazing process improvements to industry partner</li>
+          </ul>
+          <div class="chip-row">
+            <span class="chip">SolidWorks</span><span class="chip">ANSYS</span><span class="chip">GD&amp;T</span><span class="chip">DFMEA</span>
+          </div>
+        </div>
+        <div class="media-col">
+          <div class="media-fill">
+            <video controls muted loop playsinline preload="metadata" poster="assets/ANSYS_Senior_Design_Dogbone.png">
+              <source src="assets/Senior_Design_Machining_-_edited_small.mp4" type="video/mp4">
+            </video>
+            <div class="caption">CNC machining — dogbone test specimens</div>
+          </div>
+          <div class="media-thumbs">
+            <div class="media-fill small">
+              <img src="assets/ANSYS_Senior_Design_Dogbone.png" alt="ANSYS FEA stress contour plot at the brazed joint of a dogbone specimen">
+              <div class="caption">FEA stress plot (ANSYS)</div>
+            </div>
+            <div class="media-fill small">
+              <img src="assets/Senior_Design_Results.png" alt="Chart comparing physical test stress-displacement curves to cohesive zone model prediction">
+              <div class="caption">Test data vs. CZM model</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sheet-tb">
+        <div class="tb-row tb-cols-3">
+          <div class="tb-cell"><span class="tb-label">Drawn by</span><span class="tb-value">Olivia Ferrigno</span></div>
+          <div class="tb-cell"><span class="tb-label">Role</span><span class="tb-value">Project Lead</span></div>
+          <div class="tb-cell"><span class="tb-label">Term</span><span class="tb-value">Aug 2023 – May 2024</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECT 2 -->
+    <div class="sheet">
+      <div class="sheet-topbar">
+        <span class="sheet-no">Sheet P-2 of 3</span>
+        <span class="sheet-scale">Scope: Mechanical Building Systems</span>
+      </div>
+      <div class="sheet-body">
+        <div>
+          <h3>Mechanical Systems, Concept to Construction</h3>
+          <div class="sheet-sub">Arup — Mechanical Engineer</div>
+          <div class="spec-strip">
+            <div><span class="tb-label">Phase</span><span class="tb-value">Concept → construction</span></div>
+            <div><span class="tb-label">Stakeholders</span><span class="tb-value">Clients, vendors, contractors</span></div>
+            <div><span class="tb-label">Review</span><span class="tb-value">Failure-mode evaluation</span></div>
+            <div><span class="tb-label">Field</span><span class="tb-value">Install &amp; commissioning support</span></div>
+          </div>
+          <ul class="bullets">
+            <li>Designed 2D/3D mechanical systems balancing performance, code &amp; constructability</li>
+            <li>Owned deliverables; drove technical decisions across disciplines</li>
+            <li>Validated commissioned systems against design performance targets</li>
+            <li>Mentored junior engineers on design &amp; workflow</li>
+          </ul>
+          <div class="chip-row">
+            <span class="chip">Revit MEP</span><span class="chip">AutoCAD</span><span class="chip">Design Review</span><span class="chip">Commissioning</span>
+          </div>
+        </div>
+        <div class="media-col">
+          <div class="media-fill">
+            <img src="assets/Example_HVAC_Revit.jpg" alt="Isometric Revit MEP model of HVAC piping and ductwork routing">
+            <div class="caption">Revit MEP model — HVAC piping isometric</div>
+          </div>
+          <div class="media-thumbs">
+            <div class="media-fill small">
+              <img src="assets/example_IES_building.jpg" alt="3D building massing model used for mechanical systems coordination">
+              <div class="caption">Building model — systems coordination</div>
+            </div>
+            <div class="media-fill small">
+              <img src="assets/PRICE_Trip_diffusers.jpg" alt="Site photo of PRICE air diffusers during a field visit">
+              <div class="caption">Site visit — diffuser install</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sheet-tb">
+        <div class="tb-row tb-cols-3">
+          <div class="tb-cell"><span class="tb-label">Drawn by</span><span class="tb-value">Olivia Ferrigno</span></div>
+          <div class="tb-cell"><span class="tb-label">Role</span><span class="tb-value">Mechanical Engineer</span></div>
+          <div class="tb-cell"><span class="tb-label">Term</span><span class="tb-value">Aug 2024 – Present</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECT 3 -->
+    <div class="sheet">
+      <div class="sheet-topbar">
+        <span class="sheet-no">Sheet P-3 of 3</span>
+        <span class="sheet-scale">Scope: Automotive Product Design</span>
+      </div>
+      <div class="sheet-body">
+        <div>
+          <h3>Product Design &amp; Benchmarking</h3>
+          <div class="sheet-sub">Volvo Cars USA — Repair Methods &amp; Product Intern</div>
+          <div class="spec-strip">
+            <div><span class="tb-label">Focus</span><span class="tb-value">Repair methods &amp; tooling</span></div>
+            <div><span class="tb-label">Input</span><span class="tb-value">Customer requirements</span></div>
+            <div><span class="tb-label">Method</span><span class="tb-value">Competitive benchmarking</span></div>
+            <div><span class="tb-label">Tradeoffs</span><span class="tb-value">Cost / feasibility / UX</span></div>
+          </div>
+          <ul class="bullets">
+            <li>Worked hands-on with vehicle mechanical systems &amp; diagnostic tooling</li>
+            <li>Evaluated design tradeoffs against customer &amp; manufacturing constraints</li>
+            <li>Collaborated cross-functionally in a fast-paced workshop environment</li>
+          </ul>
+          <div class="chip-row">
+            <span class="chip">Benchmarking</span><span class="chip">Diagnostics</span><span class="chip">Cross-Functional</span>
+          </div>
+        </div>
+        <div class="media-col">
+          <div class="media-fill">
+            <img src="assets/Volvo_Repair_workshop_machines.png" alt="Automotive repair workshop with wheel alignment and tire service equipment">
+            <div class="caption">Repair workshop — diagnostic &amp; service tooling</div>
+          </div>
+          <div class="media-thumbs">
+            <div class="media-fill small">
+              <img src="assets/volvo_logo.jpg" alt="Volvo brand emblem">
+              <div class="caption">Volvo Cars USA</div>
+            </div>
+            <div class="media-fill small">
+              <img src="assets/Volvo_spare_tire_competitiors.png" alt="Competitive benchmarking of spare tire storage across vehicle trunks">
+              <div class="caption">Competitive benchmarking</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sheet-tb">
+        <div class="tb-row tb-cols-3">
+          <div class="tb-cell"><span class="tb-label">Drawn by</span><span class="tb-value">Olivia Ferrigno</span></div>
+          <div class="tb-cell"><span class="tb-label">Role</span><span class="tb-value">Intern</span></div>
+          <div class="tb-cell"><span class="tb-label">Term</span><span class="tb-value">Jun – Aug 2022</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLANK TEMPLATE SHEET — duplicate the .sheet block above to add more -->
+    <div class="sheet blank">
+      <div class="sheet-topbar">
+        <span class="sheet-no">Sheet P-4 — Add Project</span>
+        <span class="sheet-scale">Template</span>
+      </div>
+      <div class="sheet-body">
+        <div class="upload-slot" onclick="event.stopPropagation()">
+          <input type="file" accept="image/*">
+          <div class="upload-slot-label"><b>+</b>Add another project</div>
+        </div>
+        <p>Copy one of the sheets above and swap in a new title, spec strip, bullets &amp; images — CAD renders, FEA plots, prototypes, or field photos all work well here.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== TOOLBOX ===================== -->
+<section id="toolbox">
+  <div class="wrap">
+    <div class="eyebrow"><span class="tag">SHEET S-1</span> SOFTWARE &amp; TOOLING</div>
+    <h2 class="section-title">Toolbox</h2>
+    <div class="toolbox-grid">
+      <div class="tool-card"><span class="tool-name">SolidWorks</span><span class="tool-cat">CAD / FEA</span><div class="tool-bar"><span style="--w:92%"></span></div></div>
+      <div class="tool-card"><span class="tool-name">ANSYS</span><span class="tool-cat">FEA / Simulation</span><div class="tool-bar"><span style="--w:85%"></span></div></div>
+      <div class="tool-card"><span class="tool-name">AutoCAD</span><span class="tool-cat">2D Drafting</span><div class="tool-bar"><span style="--w:88%"></span></div></div>
+      <div class="tool-card"><span class="tool-name">Revit MEP</span><span class="tool-cat">BIM / Systems</span><div class="tool-bar"><span style="--w:80%"></span></div></div>
+      <div class="tool-card"><span class="tool-name">Python</span><span class="tool-cat">Programming</span><div class="tool-bar"><span style="--w:60%"></span></div></div>
+      <div class="tool-card"><span class="tool-name">MATLAB</span><span class="tool-cat">Numerical Analysis</span><div class="tool-bar"><span style="--w:65%"></span></div></div>
+      <div class="tool-card"><span class="tool-name">DFSS / PLM</span><span class="tool-cat">Process</span><div class="tool-bar"><span style="--w:70%"></span></div></div>
+      <div class="tool-card"><span class="tool-name">Office Suite</span><span class="tool-cat">Documentation</span><div class="tool-bar"><span style="--w:90%"></span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== EDUCATION ===================== -->
+<section id="education">
+  <div class="wrap">
+    <div class="eyebrow"><span class="tag">SHEET E-1</span> EDUCATION</div>
+    <h2 class="section-title">Academic Record</h2>
+    <div class="title-block">
+      <div class="tb-head">University of Connecticut — Storrs, CT</div>
+      <div class="tb-row tb-cols-3">
+        <div class="tb-cell"><span class="tb-label">Degree</span><span class="tb-value">B.S. Mechanical Engineering</span></div>
+        <div class="tb-cell"><span class="tb-label">Minor</span><span class="tb-value">Mathematics</span></div>
+        <div class="tb-cell"><span class="tb-label">Graduated</span><span class="tb-value">May 2024</span></div>
+      </div>
+      <div class="tb-row tb-cols-2">
+        <div class="tb-cell"><span class="tb-label">GPA</span><span class="tb-value">4.00 / 4.00</span></div>
+        <div class="tb-cell"><span class="tb-label">Distinction</span><span class="tb-value">Summa Cum Laude, Honors Program</span></div>
+      </div>
+      <div class="tb-row tb-cols-2">
+        <div class="tb-cell"><span class="tb-label">Scholarships</span><span class="tb-value">Holster Scholar '21 · Babbidge Scholar '21–'23</span></div>
+        <div class="tb-cell"><span class="tb-label">Recognition</span><span class="tb-value">Dean's List — every semester</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CONTACT / APPROVAL ===================== -->
+<footer id="contact">
+  <div class="wrap">
+    <div class="eyebrow"><span class="tag">SHEET X-1</span> APPROVAL &amp; CONTACT</div>
+    <div class="approval">
+      <div>
+        <div class="stamp">Approved for release</div>
+        <p class="footer-note">This set represents work completed through Sept 2026. Full scope, more information, & fun facts available through contact on LinkedIn.</p>
+      </div>
+      <div class="footer-links">
+        <a href="#">LinkedIn</a>
+        
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Image upload preview — in-memory only, no storage used.
+  document.querySelectorAll('.upload-slot').forEach(function(slot){
+    var input = slot.querySelector('input[type=file]');
+    input.addEventListener('change', function(e){
+      var file = e.target.files && e.target.files[0];
+      if(!file) return;
+      var reader = new FileReader();
+      reader.onload = function(ev){
+        slot.style.backgroundImage = 'url(' + ev.target.result + ')';
+        slot.classList.add('has-image');
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+</script>
+
+</body>
+</html>
